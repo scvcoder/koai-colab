@@ -43,6 +43,14 @@
   .node.dim{opacity:.18;filter:saturate(.3)}
   .node.hot{box-shadow:0 0 0 2px #fff4,0 4px 16px #0009;z-index:3}
   .node.on{outline:2px solid #ffffff55}
+  /* 노트북 반복횟수 카운터 — 난이도 동그라미 왼쪽, 클릭 +1 */
+  #colN .node .dd{margin-left:0}
+  .rep{margin-left:auto;flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;
+       font-size:12px;color:var(--mut);background:#0006;border:1px solid var(--line);
+       border-radius:20px;padding:1px 9px;cursor:pointer;user-select:none;
+       font-variant-numeric:tabular-nums}
+  .rep:hover{background:#28315a;color:var(--tx)}
+  .rep.has{color:#ffd166;border-color:#ffd16655;background:#ffd1660f}
 
 </style>
 </head>
@@ -138,6 +146,11 @@ const colP=document.getElementById('colP');
     colP.appendChild(el);
   });
 });
+// 노트북별 반복횟수 (localStorage 영구 저장)
+const REPS=JSON.parse(localStorage.getItem('koai_nb_reps')||'{}');
+const saveReps=()=>localStorage.setItem('koai_nb_reps',JSON.stringify(REPS));
+function paintRep(el,id){const c=REPS[id]||0;el.textContent='↻ '+c;el.classList.toggle('has',c>0);}
+
 // 노트북 컬럼 (2열 그리드, 색=분류)
 const colN=document.getElementById('colN');
 const grid=document.createElement('div');grid.className='grid2';colN.appendChild(grid);
@@ -145,9 +158,15 @@ NB.forEach(n=>{
   const el=document.createElement('div');el.className='node';el.id='node_'+n.id;
   el.style.borderLeftColor=CAT[n.cat].c;
   el.title=`[${DIFF[n.diff].l}·${CAT[n.cat].l}] ${n.name}\n소스: ${n.src}`;
-  el.innerHTML=`<span class="num">${n.no}</span><span class="name">${n.name}</span><span class="dd" style="background:${DIFF[n.diff].c}"></span>`;
+  el.innerHTML=`<span class="num">${n.no}</span><span class="name">${n.name}</span>`+
+    `<span class="rep" title="반복 횟수 — 좌클릭 +1 / 우클릭 −1"></span>`+
+    `<span class="dd" style="background:${DIFF[n.diff].c}"></span>`;
   el.dataset.kind='n';el.dataset.targets=(REV[n.id]||[]).join(',');el.dataset.self=n.id;
   grid.appendChild(el);
+  // 반복횟수 카운터: 좌클릭 +1 / 우클릭 −1 (노드 클릭=Colab 열기와 분리)
+  const rep=el.querySelector('.rep');paintRep(rep,n.id);
+  rep.addEventListener('click',ev=>{ev.stopPropagation();REPS[n.id]=(REPS[n.id]||0)+1;saveReps();paintRep(rep,n.id);});
+  rep.addEventListener('contextmenu',ev=>{ev.preventDefault();ev.stopPropagation();REPS[n.id]=Math.max(0,(REPS[n.id]||0)-1);saveReps();paintRep(rep,n.id);});
 });
 
 // SVG 라인
