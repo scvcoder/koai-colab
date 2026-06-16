@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IOAI 2024·2025 ↔ 기본기 노트북 매핑</title>
+<style>
+  :root{
+    --bg:#0f1320; --panel:#171c2e; --panel2:#1e2540; --line:#2c3556;
+    --tx:#e7ebf5; --mut:#9aa6c7;
+    --cat-tabular:#4f8cff; --cat-nlp:#ff8a5c; --cat-vision:#3ecf8e;
+    --cat-multi:#c08bff; --cat-gen:#ff6b9d; --cat-audio:#ffd166; --cat-tech:#8fa3bf;
+    --d1:#3ecf8e; --d2:#4f8cff; --d3:#ffab4a; --d4:#ff5d6c;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;
+       background:linear-gradient(180deg,#0b0e18,#0f1320);color:var(--tx);
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;}
+  header{padding:14px 26px 8px;flex:0 0 auto;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  h1{margin:0;font-size:21px;letter-spacing:-.2px;white-space:nowrap}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--mut);align-items:center}
+  .chip{display:inline-flex;align-items:center;gap:5px}
+  .dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+  .d{width:22px;height:9px;border-radius:4px;display:inline-block}
+  .btn{margin-left:auto;font-size:13px;background:var(--panel2);color:var(--tx);border:1px solid var(--line);
+       border-radius:8px;padding:8px 15px;cursor:pointer}
+  .btn:hover{background:#28315a}
+  .hint{font-size:12.5px;color:var(--mut);padding:0 26px 6px;flex:0 0 auto}
+
+  #board{position:relative;flex:1 1 auto;display:grid;grid-template-columns:minmax(320px,1fr) minmax(520px,1.3fr);
+         gap:80px;padding:6px 26px 20px;overflow:hidden;min-height:0}
+  svg#links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+  .col{min-height:0;display:flex;flex-direction:column}
+  .col>h2{font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;flex:0 0 auto}
+  .pane{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:7px}
+  .yhdr{font-size:13px;color:var(--mut);font-weight:700;margin:2px 0 0;flex:0 0 auto}
+  #colP .node{flex:1 1 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:9px 16px;flex:1 1 auto;min-height:0}
+  .node{position:relative;z-index:2;background:var(--panel);border:1px solid var(--line);border-left-width:5px;
+        border-radius:9px;padding:8px 15px;cursor:pointer;transition:.12s;
+        display:flex;align-items:center;gap:9px;font-size:15px;line-height:1.2}
+  .node .num{font-size:13px;color:var(--mut);font-variant-numeric:tabular-nums}
+  .node .name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .node .dd{width:12px;height:12px;border-radius:50%;margin-left:auto;flex:0 0 auto}
+  .node.dim{opacity:.18;filter:saturate(.3)}
+  .node.hot{box-shadow:0 0 0 2px #fff4,0 4px 16px #0009;z-index:3}
+  .node.on{outline:2px solid #ffffff55}
+
+  /* overlay tables */
+  #ov{position:fixed;inset:0;background:#0b0e18ee;z-index:50;display:none;padding:24px;overflow:auto}
+  #ov.show{display:block}
+  #ov .close{position:fixed;top:14px;right:20px}
+  table{width:100%;border-collapse:collapse;font-size:12px;background:var(--panel);border-radius:10px;overflow:hidden;margin-bottom:18px}
+  th,td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--panel2);color:var(--mut);font-size:10.5px;text-transform:uppercase}
+  .badge{font-size:10px;padding:1px 6px;border-radius:20px;font-weight:700}
+  .diff{font-size:10px;padding:1px 6px;border-radius:20px;font-weight:700;color:#0b0e18}
+  code{background:#0008;padding:1px 5px;border-radius:5px;font-size:11px;color:#cdd7f5}
+  h3{font-size:14px;margin:6px 0 8px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🧭 IOAI 2024·2025 ↔ 기본기 노트북</h1>
+  <div class="legend">
+    <span class="chip"><span class="dot" style="background:var(--cat-tabular)"></span>테이블러</span>
+    <span class="chip"><span class="dot" style="background:var(--cat-nlp)"></span>NLP</span>
+    <span class="chip"><span class="dot" style="background:var(--cat-vision)"></span>비전</span>
+    <span class="chip"><span class="dot" style="background:var(--cat-multi)"></span>멀티모달</span>
+    <span class="chip"><span class="dot" style="background:var(--cat-gen)"></span>생성</span>
+    <span class="chip"><span class="dot" style="background:var(--cat-audio)"></span>오디오</span>
+    <span class="chip"><span class="dot" style="background:var(--cat-tech)"></span>기법</span>
+    &nbsp;|&nbsp;
+    <span class="chip"><span class="d" style="background:var(--d1)"></span>입문</span>
+    <span class="chip"><span class="d" style="background:var(--d2)"></span>기초</span>
+    <span class="chip"><span class="d" style="background:var(--d3)"></span>중급</span>
+    <span class="chip"><span class="d" style="background:var(--d4)"></span>고급</span>
+  </div>
+  <button class="btn" onclick="document.getElementById('ov').classList.add('show')">📋 상세 표</button>
+</header>
+<div class="hint">💡 문제·노트북에 마우스를 올리면 연결선이 그려집니다 · 노드 위에 커서를 두면 상세 설명(툴팁) 표시</div>
+
+<div id="board">
+  <svg id="links"></svg>
+  <div class="col"><h2>◀ IOAI 2024·2025 문제 (13)</h2><div class="pane" id="colP"></div></div>
+  <div class="col"><h2>우리 기본기 노트북 (27) ▶</h2><div class="pane" id="colN"></div></div>
+</div>
+
+<div id="ov">
+  <button class="btn close" onclick="document.getElementById('ov').classList.remove('show')">✕ 닫기</button>
+  <h3>📋 IOAI 문제별 — 분류·난이도·핵심 기법·대응 노트북</h3>
+  <table id="tblP"><thead><tr><th>문제</th><th>연도/라운드</th><th>분류</th><th>난이도</th><th>핵심 기법(공식 해법)</th><th>대응 노트북</th></tr></thead><tbody></tbody></table>
+  <h3>📒 노트북별 — 분류·난이도·소스·지원 문제</h3>
+  <table id="tblN"><thead><tr><th>#</th><th>노트북</th><th>분류</th><th>난이도</th><th>Kaggle 소스</th><th>지원 IOAI 문제</th></tr></thead><tbody></tbody></table>
+</div>
+
+<script>
+const CAT={tabular:{c:'#4f8cff',l:'테이블러'},nlp:{c:'#ff8a5c',l:'NLP'},vision:{c:'#3ecf8e',l:'비전'},
+  multi:{c:'#c08bff',l:'멀티모달'},gen:{c:'#ff6b9d',l:'생성'},audio:{c:'#ffd166',l:'오디오'},tech:{c:'#8fa3bf',l:'기법'}};
+const DIFF={1:{l:'입문',c:'#3ecf8e'},2:{l:'기초',c:'#4f8cff'},3:{l:'중급',c:'#ffab4a'},4:{l:'고급',c:'#ff5d6c'}};
+
+const NB=[
+ {id:'n01',no:'01',name:'RandomForest',cat:'tabular',diff:1,src:'titanic'},
+ {id:'n02',no:'02',name:'LightGBM',cat:'tabular',diff:1,src:'titanic'},
+ {id:'n03',no:'03',name:'XGBoost',cat:'tabular',diff:2,src:'house-prices'},
+ {id:'n04',no:'04',name:'CatBoost',cat:'tabular',diff:2,src:'house-prices'},
+ {id:'n05',no:'05',name:'Ensemble',cat:'tabular',diff:3,src:'house-prices'},
+ {id:'n06',no:'06',name:'K-Fold(OOF)',cat:'tabular',diff:2,src:'house-prices'},
+ {id:'n07',no:'07',name:'Ridge+TF-IDF',cat:'nlp',diff:1,src:'nlp-getting-started'},
+ {id:'n08',no:'08',name:'CNN',cat:'vision',diff:2,src:'digit-recognizer'},
+ {id:'n09',no:'09',name:'U-Net(분할)',cat:'vision',diff:3,src:'data-science-bowl-2018'},
+ {id:'n10',no:'10',name:'ResNet(전이학습)',cat:'vision',diff:2,src:'dogs-vs-cats'},
+ {id:'n11',no:'11',name:'CLIP(제로샷)',cat:'multi',diff:3,src:'dogs-vs-cats'},
+ {id:'n12',no:'12',name:'BERT(미세조정)',cat:'nlp',diff:3,src:'nlp-getting-started'},
+ {id:'n13',no:'13',name:'YOLO(탐지)',cat:'vision',diff:3,src:'global-wheat-detection'},
+ {id:'n14',no:'14',name:'DCGAN',cat:'gen',diff:3,src:'dogs-vs-cats'},
+ {id:'n15',no:'15',name:'Diffusion DDPM',cat:'gen',diff:4,src:'digit-recognizer'},
+ {id:'n16',no:'16',name:'LLM 미세조정',cat:'nlp',diff:4,src:'nlp-getting-started'},
+ {id:'n17',no:'17',name:'메트릭러닝',cat:'multi',diff:3,src:'digit-recognizer'},
+ {id:'n18',no:'18',name:'모델 압축',cat:'tech',diff:3,src:'digit-recognizer'},
+ {id:'n19',no:'19',name:'준지도학습',cat:'tech',diff:3,src:'digit-recognizer'},
+ {id:'n20',no:'20',name:'Grad-CAM/Saliency',cat:'tech',diff:3,src:'digit-recognizer'},
+ {id:'n21',no:'21',name:'이미지 회귀',cat:'vision',diff:3,src:'petfinder'},
+ {id:'n22',no:'22',name:'오디오 분류',cat:'audio',diff:3,src:'FSDD'},
+ {id:'n23',no:'23',name:'단어분절(BiLSTM)',cat:'nlp',diff:3,src:'nlp-getting-started'},
+ {id:'n24',no:'24',name:'밀도맵 카운팅',cat:'vision',diff:4,src:'global-wheat-detection'},
+ {id:'n25',no:'25',name:'텍스트 임베딩/유사도',cat:'nlp',diff:3,src:'nlp-getting-started'},
+ {id:'n26',no:'26',name:'클러스터링+PCA(비지도)',cat:'tech',diff:3,src:'digit-recognizer'},
+ {id:'n27',no:'27',name:'LoRA/PEFT LLM SFT',cat:'nlp',diff:4,src:'nlp-getting-started'},
+];
+const PB=[
+ {id:'p_help',t:'Help BOBAI',y:2024,r:'On-Site',cat:'nlp',diff:3,tech:'KNeighbors+StandardScaler (frozen 임베딩 위 kNN, 클래스 확장)',maps:['n17','n10','n08']},
+ {id:'p_hyper',t:'Lost in Hyperspace',y:2024,r:'On-Site',cat:'tabular',diff:3,tech:'PCA+LinearRegression (차원축소+회귀, 피처엔지니어링)',maps:['n26','n03','n04','n06']},
+ {id:'p_cow',t:'Madarian Cow',y:2024,r:'On-Site',cat:'gen',diff:4,tech:'diffusers+DETR+timm (Diffusion 편집 + 검출)',maps:['n15','n14','n13']},
+ {id:'p_cham',t:'Chameleon',y:2025,r:'At-Home',cat:'multi',diff:4,tech:'SentenceTransformer+cosine (문장 임베딩 유사도 + 시퀀스 추론)',maps:['n25','n11','n17']},
+ {id:'p_radar',t:'Radar',y:2025,r:'At-Home/Indiv',cat:'vision',diff:3,tech:'Conv2d + 연결요소 (비-RGB 신호 텐서 CV)',maps:['n08','n09','n13']},
+ {id:'p_wthr',t:'Weather (위성 강수)',y:2025,r:'At-Home',cat:'vision',diff:4,tech:'U-Net 회귀 (이미지→연속 맵 dense prediction)',maps:['n21','n09']},
+ {id:'p_anti',t:'Antique 인증',y:2025,r:'Individual',cat:'vision',diff:3,tech:'SpectralClustering+SVC+pseudo (준지도+클러스터링)',maps:['n19','n26','n10']},
+ {id:'p_chk',t:'Chicken Counting',y:2025,r:'Individual',cat:'vision',diff:4,tech:'U-Net+density map (밀도맵 카운팅)',maps:['n24','n13','n09']},
+ {id:'p_conc',t:'Concepts',y:2025,r:'Individual',cat:'multi',diff:4,tech:'unsloth+vllm+trl SFT+CLIP (LoRA SFT + 멀티모달)',maps:['n27','n16','n25','n11']},
+ {id:'p_pix',t:'Pixel Efficiency',y:2025,r:'Individual',cat:'tech',diff:4,tech:'CLIP 비전 임베딩 기여도 (중요 픽셀=Saliency)',maps:['n20','n11','n18']},
+ {id:'p_rest',t:'Restroom 매칭',y:2025,r:'Individual',cat:'multi',diff:3,tech:'CLIP+cosine (학습형 메트릭러닝 매칭)',maps:['n17','n11']},
+ {id:'p_spch',t:'Synthetic Speech',y:2025,r:'GAITE',cat:'audio',diff:3,tech:'ResNet+spectrogram (오디오 분류)',maps:['n22','n10']},
+ {id:'p_word',t:'Word Segmentation',y:2025,r:'GAITE',cat:'nlp',diff:3,tech:'BiLSTM (시퀀스 라벨링/분절)',maps:['n23']},
+];
+const REV={};NB.forEach(n=>REV[n.id]=[]);PB.forEach(p=>p.maps.forEach(id=>{if(REV[id])REV[id].push(p.id)}));
+const badge=c=>`<span class="badge" style="background:${CAT[c].c}22;color:${CAT[c].c};border:1px solid ${CAT[c].c}66">${CAT[c].l}</span>`;
+const diffB=d=>`<span class="diff" style="background:${DIFF[d].c}">${DIFF[d].l}</span>`;
+
+// 문제 컬럼 (연도 그룹)
+const colP=document.getElementById('colP');
+[[2024,'IOAI 2024 · On-Site'],[2025,'IOAI 2025 · At-Home/Individual/GAITE']].forEach(([yr,lbl])=>{
+  const h=document.createElement('div');h.className='yhdr';h.textContent=lbl;colP.appendChild(h);
+  PB.filter(p=>p.y===yr).forEach(p=>{
+    const el=document.createElement('div');el.className='node';el.id='node_'+p.id;
+    el.style.borderLeftColor=CAT[p.cat].c;
+    el.title=`[${DIFF[p.diff].l}·${CAT[p.cat].l}] ${p.r}\n${p.tech}`;
+    el.innerHTML=`<span class="name">${p.t}</span><span class="dd" style="background:${DIFF[p.diff].c}"></span>`;
+    el.dataset.kind='p';el.dataset.targets=p.maps.join(',');el.dataset.self=p.id;
+    colP.appendChild(el);
+  });
+});
+// 노트북 컬럼 (2열 그리드, 색=분류)
+const colN=document.getElementById('colN');
+const grid=document.createElement('div');grid.className='grid2';colN.appendChild(grid);
+NB.forEach(n=>{
+  const el=document.createElement('div');el.className='node';el.id='node_'+n.id;
+  el.style.borderLeftColor=CAT[n.cat].c;
+  el.title=`[${DIFF[n.diff].l}·${CAT[n.cat].l}] ${n.name}\n소스: ${n.src}`;
+  el.innerHTML=`<span class="num">${n.no}</span><span class="name">${n.name}</span><span class="dd" style="background:${DIFF[n.diff].c}"></span>`;
+  el.dataset.kind='n';el.dataset.targets=(REV[n.id]||[]).join(',');el.dataset.self=n.id;
+  grid.appendChild(el);
+});
+
+// SVG 라인
+const svg=document.getElementById('links'),board=document.getElementById('board'),NS='http://www.w3.org/2000/svg';
+const clr=()=>{while(svg.firstChild)svg.removeChild(svg.firstChild)};
+function draw(selfId,targets,kind){
+  clr();const br=board.getBoundingClientRect();
+  const a=document.getElementById('node_'+selfId).getBoundingClientRect();
+  const col=CAT[(kind==='p'?PB.find(p=>p.id===selfId).cat:NB.find(n=>n.id===selfId).cat)].c;
+  targets.forEach(tid=>{
+    const tn=document.getElementById('node_'+tid);if(!tn)return;const b=tn.getBoundingClientRect();
+    let x1,y1,x2,y2;
+    if(kind==='p'){x1=a.right-br.left;y1=a.top+a.height/2-br.top;x2=b.left-br.left;y2=b.top+b.height/2-br.top;}
+    else{x1=b.right-br.left;y1=b.top+b.height/2-br.top;x2=a.left-br.left;y2=a.top+a.height/2-br.top;}
+    const mx=(x1+x2)/2,p=document.createElementNS(NS,'path');
+    p.setAttribute('d',`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);
+    p.setAttribute('fill','none');p.setAttribute('stroke',col);p.setAttribute('stroke-width','2');p.setAttribute('opacity','.9');
+    svg.appendChild(p);
+  });
+}
+function hi(selfId,targets){const keep=new Set([selfId,...targets]);
+  document.querySelectorAll('.node').forEach(el=>{const id=el.dataset.self;
+    el.classList.toggle('dim',!keep.has(id));el.classList.toggle('hot',id===selfId);el.classList.toggle('on',keep.has(id)&&id!==selfId);});}
+const reset=()=>{clr();document.querySelectorAll('.node').forEach(el=>el.classList.remove('dim','hot','on'))};
+document.querySelectorAll('.node').forEach(el=>el.addEventListener('mouseenter',()=>{
+  const s=el.dataset.self,t=(el.dataset.targets||'').split(',').filter(Boolean);hi(s,t);draw(s,t,el.dataset.kind);}));
+board.addEventListener('mouseleave',reset);window.addEventListener('resize',reset);
+
+// 표
+const tbP=document.querySelector('#tblP tbody');
+PB.forEach(p=>{const maps=p.maps.map(id=>{const n=NB.find(x=>x.id===id);return n?n.no+' '+n.name:''}).join(' · ');
+  tbP.insertAdjacentHTML('beforeend',`<tr><td><b>${p.t}</b></td><td>${p.y}·${p.r}</td><td>${badge(p.cat)}</td><td>${diffB(p.diff)}</td><td>${p.tech}</td><td style="color:#9aa6c7">${maps}</td></tr>`);});
+const tbN=document.querySelector('#tblN tbody');
+NB.forEach(n=>{const sup=(REV[n.id]||[]).map(pid=>{const p=PB.find(x=>x.id===pid);return p?p.t:''}).join(' · ')||'<span style="color:#5b6b8c">— 공통 기본기</span>';
+  tbN.insertAdjacentHTML('beforeend',`<tr><td style="color:#9aa6c7">${n.no}</td><td><b>${n.name}</b></td><td>${badge(n.cat)}</td><td>${diffB(n.diff)}</td><td><code>${n.src}</code></td><td style="color:#9aa6c7">${sup}</td></tr>`);});
+
+/* ── 노트북 클릭 → 새 탭으로 Colab 열기 ───────────────────────────────
+   Colab은 로컬/임의 URL을 직접 못 열어 GitHub에 올라간 노트북만 열 수 있다.
+   아래 GH(owner/repo/branch)를 본인 저장소로 채우면 클릭 시 해당 .ipynb가 Colab에 뜬다. */
+const GH={owner:'scvcoder',repo:'koai-colab',branch:'main',dir:''};   // 노트북 = 저장소 루트
+const NBFILE={
+ '01':'01_titanic_randomforest_colab.ipynb','02':'02_titanic_lightgbm_colab.ipynb',
+ '03':'03_house-prices_xgboost_colab.ipynb','04':'04_house-prices_catboost_colab.ipynb',
+ '05':'05_house-prices_ensemble_colab.ipynb','06':'06_house-prices_kfold-lightgbm_colab.ipynb',
+ '07':'07_nlp-getting-started_ridge_colab.ipynb','08':'08_digit-recognizer_cnn_colab.ipynb',
+ '09':'09_data-science-bowl-2018_unet_colab.ipynb','10':'10_dogs-vs-cats_resnet_colab.ipynb',
+ '11':'11_dogs-vs-cats_clip-zeroshot_colab.ipynb','12':'12_nlp-getting-started_bert_colab.ipynb',
+ '13':'13_global-wheat-detection_yolo_colab.ipynb','14':'14_dogs-vs-cats_dcgan_colab.ipynb',
+ '15':'15_digit-recognizer_diffusion-ddpm_colab.ipynb','16':'16_nlp-getting-started_llm-finetune_colab.ipynb',
+ '17':'17_digit-recognizer_metric-learning_colab.ipynb','18':'18_digit-recognizer_compression_colab.ipynb',
+ '19':'19_digit-recognizer_semi-supervised_colab.ipynb','20':'20_digit-recognizer_gradcam-saliency_colab.ipynb',
+ '21':'21_petfinder_image-regression_colab.ipynb','22':'22_audio_spectrogram-cnn_colab.ipynb',
+ '23':'23_nlp-getting-started_word-segmentation_colab.ipynb','24':'24_global-wheat-detection_density-counting_colab.ipynb',
+ '25':'25_nlp-getting-started_text-embeddings_colab.ipynb','26':'26_digit-recognizer_clustering-pca_colab.ipynb',
+ '27':'27_nlp-getting-started_lora-peft-sft_colab.ipynb',
+};
+function colabURL(no){const f=NBFILE[no];if(!f)return null;
+  const path=[GH.dir,f].filter(Boolean).join('/');
+  return `https://colab.research.google.com/github/${GH.owner}/${GH.repo}/blob/${GH.branch}/${path}`;}
+NB.forEach(n=>{const el=document.getElementById('node_'+n.id);if(!el)return;
+  el.title=el.title+'\n\n🔗 클릭 → 새 탭에서 Colab 열기';
+  el.addEventListener('click',()=>{
+    if(GH.owner==='OWNER'){alert('Colab 저장소가 아직 설정되지 않았습니다.\nioai_mapping.html 상단의 GH(owner/repo/branch)를 본인 GitHub 저장소로 채워주세요.');return;}
+    const u=colabURL(n.no);if(u)window.open(u,'_blank','noopener');
+  });
+});
+</script>
+</body>
+</html>
