@@ -173,8 +173,8 @@ async function completeNotebook(n,rep){
     const r=await fetch(`/api/notebooks/${n.id}/complete`,{method:'POST',credentials:'same-origin'});
     const d=await r.json().catch(()=>({}));
     if(!r.ok){nbToast('❌ '+(d.detail||'오류가 발생했습니다'),true);return;}
-    if(d.ok===false){nbToast(d.reason==='cooldown'
-      ?`⏳ 방금 완주 처리됨 — 잠시 후 다시 (쿨다운 ${Math.round((d.cooldown_sec||300)/60)}분)`:'처리 실패',true);return;}
+    if(d.ok===false){nbToast(d.reason==='daily_limit'
+      ?'⏳ 오늘은 이미 이 노트북 완주 보상을 받았어요 — 경험치는 하루 1회':'처리 실패',true);return;}
     REPS[n.id]=d.count;paintRep(rep,n.id);
     let m=`✅ <b>${n.no} ${n.name}</b> 완주! <span style="color:#9aa6c7">(${d.count}회)</span><br>`;
     m+=`+${(d.xp||0).toLocaleString()} XP`;
