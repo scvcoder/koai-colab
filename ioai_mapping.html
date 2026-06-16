@@ -176,7 +176,8 @@ async function completeNotebook(n,rep){
     if(d.ok===false){nbToast(d.reason==='daily_limit'
       ?'⏳ 오늘은 이미 이 노트북 완주 보상을 받았어요 — 경험치는 하루 1회':'처리 실패',true);return;}
     REPS[n.id]=d.count;paintRep(rep,n.id);
-    let m=`✅ <b>${n.no} ${n.name}</b> 완주! <span style="color:#9aa6c7">(${d.count}회)</span><br>`;
+    let m=`<div style="font-size:1.15em;color:#3ecf8e;font-weight:800;margin-bottom:8px">🎉 축하합니다. 코딩테스트 1문제를 풀으셨어요!!!</div>`;
+    m+=`✅ <b>${n.no} ${n.name}</b> 완주! <span style="color:#9aa6c7">(${d.count}회)</span><br>`;
     m+=`+${(d.xp||0).toLocaleString()} XP`;
     if(d.gold)m+=` · +${d.gold.toLocaleString()} G`;
     const eg=(d.eggs||0);if(eg)m+=` · 🥚×${eg}`;
