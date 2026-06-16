@@ -51,6 +51,14 @@
        font-variant-numeric:tabular-nums}
   .rep:hover{background:#28315a;color:var(--tx)}
   .rep.has{color:#ffd166;border-color:#ffd16655;background:#ffd1660f}
+  /* 완주 보상 토스트 */
+  #nbtoast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+    max-width:560px;background:#171c2e;border:1px solid #2c3556;border-left:5px solid #3ecf8e;
+    color:#e7ebf5;padding:13px 20px;border-radius:10px;font-size:14px;line-height:1.55;
+    box-shadow:0 8px 30px #000a;opacity:0;pointer-events:none;transition:.25s;z-index:80}
+  #nbtoast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  #nbtoast.err{border-left-color:#ff5d6c}
+  #nbtoast b{color:#ffd166}
 
 </style>
 </head>
@@ -146,10 +154,42 @@ const colP=document.getElementById('colP');
     colP.appendChild(el);
   });
 });
-// 노트북별 반복횟수 (localStorage 영구 저장)
-const REPS=JSON.parse(localStorage.getItem('koai_nb_reps')||'{}');
-const saveReps=()=>localStorage.setItem('koai_nb_reps',JSON.stringify(REPS));
+// 노트북 완주 횟수 — 서버 권위(/api/notebooks). REPS는 표시용 캐시.
+const REPS={}, repEls={};
 function paintRep(el,id){const c=REPS[id]||0;el.textContent='↻ '+c;el.classList.toggle('has',c>0);}
+function nbToast(html,isErr){let t=document.getElementById('nbtoast');
+  if(!t){t=document.createElement('div');t.id='nbtoast';document.body.appendChild(t);}
+  t.className=isErr?'err':'ok';t.innerHTML=html;t.classList.add('show');
+  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),isErr?3500:6500);}
+async function loadCounts(){try{const r=await fetch('/api/notebooks',{credentials:'same-origin'});
+  if(!r.ok)return;const d=await r.json();Object.assign(REPS,d.counts||{});
+  for(const id in repEls)paintRep(repEls[id],id);}catch(e){}}
+let nbBusy=false;
+async function completeNotebook(n,rep){
+  if(nbBusy)return;
+  if(!confirm(`'${n.no} ${n.name}' 노트북을 1회 완주했나요?\n확인을 누르면 보상이 지급됩니다.`))return;
+  nbBusy=true;rep.style.opacity='0.5';
+  try{
+    const r=await fetch(`/api/notebooks/${n.id}/complete`,{method:'POST',credentials:'same-origin'});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok){nbToast('❌ '+(d.detail||'오류가 발생했습니다'),true);return;}
+    if(d.ok===false){nbToast(d.reason==='cooldown'
+      ?`⏳ 방금 완주 처리됨 — 잠시 후 다시 (쿨다운 ${Math.round((d.cooldown_sec||300)/60)}분)`:'처리 실패',true);return;}
+    REPS[n.id]=d.count;paintRep(rep,n.id);
+    let m=`✅ <b>${n.no} ${n.name}</b> 완주! <span style="color:#9aa6c7">(${d.count}회)</span><br>`;
+    m+=`+${(d.xp||0).toLocaleString()} XP`;
+    if(d.gold)m+=` · +${d.gold.toLocaleString()} G`;
+    const eg=(d.eggs||0);if(eg)m+=` · 🥚×${eg}`;
+    if(d.is_first)m+=`<br>🌟 첫 완주 보너스 ×2`;
+    if(d.event_double)m+=` · ⚡ 이벤트 ×2`;
+    if(d.multiplier&&d.multiplier>1)m+=` <span style="color:#9aa6c7">(버프 ×${d.multiplier})</span>`;
+    (d.milestones||[]).forEach(ms=>{m+=`<br>🏆 칭호 획득: <b>${ms.name}</b> (+${(ms.xp||0).toLocaleString()} XP)`;});
+    nbToast(m);
+    try{window.parent.dispatchEvent(new Event('koai:profile-refresh'));}catch(e){}
+  }catch(e){nbToast('❌ 네트워크 오류',true);}
+  finally{nbBusy=false;rep.style.opacity='';}
+}
+setTimeout(loadCounts,0);
 
 // 노트북 컬럼 (2열 그리드, 색=분류)
 const colN=document.getElementById('colN');
@@ -159,14 +199,13 @@ NB.forEach(n=>{
   el.style.borderLeftColor=CAT[n.cat].c;
   el.title=`[${DIFF[n.diff].l}·${CAT[n.cat].l}] ${n.name}\n소스: ${n.src}`;
   el.innerHTML=`<span class="num">${n.no}</span><span class="name">${n.name}</span>`+
-    `<span class="rep" title="반복 횟수 — 좌클릭 +1 / 우클릭 −1"></span>`+
+    `<span class="rep" title="1회 완주 기록 — 클릭 시 확인 후 보상 지급"></span>`+
     `<span class="dd" style="background:${DIFF[n.diff].c}"></span>`;
   el.dataset.kind='n';el.dataset.targets=(REV[n.id]||[]).join(',');el.dataset.self=n.id;
   grid.appendChild(el);
-  // 반복횟수 카운터: 좌클릭 +1 / 우클릭 −1 (노드 클릭=Colab 열기와 분리)
-  const rep=el.querySelector('.rep');paintRep(rep,n.id);
-  rep.addEventListener('click',ev=>{ev.stopPropagation();REPS[n.id]=(REPS[n.id]||0)+1;saveReps();paintRep(rep,n.id);});
-  rep.addEventListener('contextmenu',ev=>{ev.preventDefault();ev.stopPropagation();REPS[n.id]=Math.max(0,(REPS[n.id]||0)-1);saveReps();paintRep(rep,n.id);});
+  // 완주 카운터: 클릭 → 확인 → 서버 보상 지급 (노드 클릭=Colab 열기와 분리)
+  const rep=el.querySelector('.rep');repEls[n.id]=rep;paintRep(rep,n.id);
+  rep.addEventListener('click',ev=>{ev.stopPropagation();completeNotebook(n,rep);});
 });
 
 // SVG 라인
