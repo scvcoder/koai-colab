@@ -85,7 +85,7 @@
 <div id="board">
   <svg id="links"></svg>
   <div class="col"><h2>◀ IOAI 2024·2025 문제 (13)</h2><div class="pane" id="colP"></div></div>
-  <div class="col"><h2>우리 기본기 노트북 (21) ▶</h2><div class="pane" id="colN"></div></div>
+  <div class="col"><h2>우리 기본기 노트북 (26) ▶</h2><div class="pane" id="colN"></div></div>
 </div>
 
 <script>
@@ -115,19 +115,24 @@ const NB=[
  {id:'n19',no:'19',name:'오디오 스펙트로그램 CNN',cat:'audio',diff:3,src:'dont-call-me-turkey'},
  {id:'n20',no:'20',name:'문자 BiLSTM 분절',cat:'nlp',diff:3,src:'nlp-getting-started'},
  {id:'n21',no:'21',name:'BiLSTM NER',cat:'nlp',diff:3,src:'mipt-ner'},
+ {id:'n22',no:'22',name:'CLIP 박스 탐색(coarse-to-fine)',cat:'multi',diff:4,src:'dogs-vs-cats'},
+ {id:'n23',no:'23',name:'준지도학습',cat:'tech',diff:3,src:'digit-recognizer'},
+ {id:'n24',no:'24',name:'밀도 추정 카운팅',cat:'vision',diff:4,src:'data-science-bowl-2018'},
+ {id:'n25',no:'25',name:'Radar 가중CE U-Net',cat:'vision',diff:3,src:'radar-ioai-2025'},
+ {id:'n26',no:'26',name:'Restroom CLIP 매칭',cat:'multi',diff:3,src:'restroom-ioai-2025'},
 ];
 const PB=[
  {id:'p_help',t:'Help BOBAI',y:2024,r:'On-Site',cat:'nlp',diff:3,tech:'KNeighbors+StandardScaler (frozen 임베딩 위 kNN, 클래스 확장)',maps:['n13','n12','n16']},
  {id:'p_hyper',t:'Lost in Hyperspace',y:2024,r:'On-Site',cat:'tabular',diff:3,tech:'PCA+LinearRegression (차원축소+회귀, 피처엔지니어링)',maps:['n14','n03','n06']},
  {id:'p_cow',t:'Madarian Cow',y:2024,r:'On-Site',cat:'gen',diff:4,tech:'생성+검증 (frozen 생성기 + 분류기 검증)',maps:['n15','n08']},
  {id:'p_cham',t:'Chameleon',y:2025,r:'At-Home',cat:'multi',diff:4,tech:'문장 임베딩 대조학습(MNR) + 코사인 유사도',maps:['n16','n11','n13']},
- {id:'p_radar',t:'Radar',y:2025,r:'At-Home/Indiv',cat:'vision',diff:3,tech:'가중 CrossEntropy U-Net (비-RGB 신호 텐서 분할)',maps:['n17','n09','n08']},
+ {id:'p_radar',t:'Radar',y:2025,r:'At-Home/Indiv',cat:'vision',diff:3,tech:'가중 CrossEntropy U-Net (비-RGB 신호 텐서 분할)',maps:['n25','n17','n09']},
  {id:'p_wthr',t:'Weather (위성 강수)',y:2025,r:'At-Home',cat:'vision',diff:4,tech:'메타데이터 FiLM + 주기 인코딩 (이미지→연속값)',maps:['n18','n17']},
- {id:'p_anti',t:'Antique 인증',y:2025,r:'Individual',cat:'vision',diff:3,tech:'frozen 특징 + 준지도/클러스터링',maps:['n13','n17']},
- {id:'p_chk',t:'Chicken Counting',y:2025,r:'Individual',cat:'vision',diff:4,tech:'U-Net 분할/밀도 (카운팅)',maps:['n17','n09']},
+ {id:'p_anti',t:'Antique 인증',y:2025,r:'Individual',cat:'vision',diff:3,tech:'준지도학습 (라벨 없는 데이터 활용) + frozen 특징',maps:['n23','n13','n17']},
+ {id:'p_chk',t:'Chicken Counting',y:2025,r:'Individual',cat:'vision',diff:4,tech:'밀도 추정 카운팅 (density map)',maps:['n24','n17','n09']},
  {id:'p_conc',t:'Concepts',y:2025,r:'Individual',cat:'multi',diff:4,tech:'대조학습 임베딩 + 멀티모달(CLIP)',maps:['n16','n11']},
- {id:'p_pix',t:'Pixel Efficiency',y:2025,r:'Individual',cat:'tech',diff:4,tech:'CLIP 비전 임베딩 기여도 (중요 픽셀=Saliency)',maps:['n11','n13']},
- {id:'p_rest',t:'Restroom 매칭',y:2025,r:'Individual',cat:'multi',diff:3,tech:'임베딩 매칭 (대조학습/CLIP + 코사인)',maps:['n16','n11']},
+ {id:'p_pix',t:'Pixel Efficiency',y:2025,r:'Individual',cat:'tech',diff:4,tech:'CLIP coarse-to-fine 박스 탐색 (중요 영역 식별)',maps:['n22','n11','n13']},
+ {id:'p_rest',t:'Restroom 매칭',y:2025,r:'Individual',cat:'multi',diff:3,tech:'2단계 CLIP 미세조정 매칭(Re-ID)',maps:['n26','n16','n11']},
  {id:'p_spch',t:'Synthetic Speech',y:2025,r:'GAITE',cat:'audio',diff:3,tech:'스펙트로그램 CNN (오디오 분류)',maps:['n19','n10']},
  {id:'p_word',t:'Word Segmentation',y:2025,r:'GAITE',cat:'nlp',diff:3,tech:'문자 BiLSTM 시퀀스 라벨링/분절',maps:['n20','n21']},
 ];
@@ -249,6 +254,11 @@ const NBFILE={
  '19':'19_dont-call-me-turkey_audio-spectrogram-cnn_colab.ipynb',
  '20':'20_nlp-getting-started_char-bilstm-segmentation_colab.ipynb',
  '21':'21_mipt-ner_bilstm-ner_colab.ipynb',
+ '22':'22_dogs-vs-cats_clip-box-search_colab.ipynb',
+ '23':'23_digit-recognizer_semi-supervised_colab.ipynb',
+ '24':'24_data-science-bowl-2018_density-counting_colab.ipynb',
+ '25':'25_radar-ioai-2025_weighted-ce-unet_colab.ipynb',
+ '26':'26_restroom-ioai-2025_clip-reid-matching_colab.ipynb',
 };
 function colabURL(no){const f=NBFILE[no];if(!f)return null;
   const path=[GH.dir,f].filter(Boolean).join('/');
