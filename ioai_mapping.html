@@ -85,7 +85,7 @@
 <div id="board">
   <svg id="links"></svg>
   <div class="col"><h2>◀ IOAI 2024·2025 문제 (13)</h2><div class="pane" id="colP"></div></div>
-  <div class="col"><h2>우리 기본기 노트북 (27) ▶</h2><div class="pane" id="colN"></div></div>
+  <div class="col"><h2>우리 기본기 노트북 (21) ▶</h2><div class="pane" id="colN"></div></div>
 </div>
 
 <script>
@@ -106,36 +106,30 @@ const NB=[
  {id:'n10',no:'10',name:'ResNet(전이학습)',cat:'vision',diff:2,src:'dogs-vs-cats'},
  {id:'n11',no:'11',name:'CLIP(제로샷)',cat:'multi',diff:3,src:'dogs-vs-cats'},
  {id:'n12',no:'12',name:'BERT(미세조정)',cat:'nlp',diff:3,src:'nlp-getting-started'},
- {id:'n13',no:'13',name:'YOLO(탐지)',cat:'vision',diff:3,src:'global-wheat-detection'},
- {id:'n14',no:'14',name:'DCGAN',cat:'gen',diff:3,src:'dogs-vs-cats'},
- {id:'n15',no:'15',name:'Diffusion DDPM',cat:'gen',diff:4,src:'digit-recognizer'},
- {id:'n16',no:'16',name:'LLM 미세조정',cat:'nlp',diff:4,src:'nlp-getting-started'},
- {id:'n17',no:'17',name:'메트릭러닝',cat:'multi',diff:3,src:'digit-recognizer'},
- {id:'n18',no:'18',name:'모델 압축',cat:'tech',diff:3,src:'digit-recognizer'},
- {id:'n19',no:'19',name:'준지도학습',cat:'tech',diff:3,src:'digit-recognizer'},
- {id:'n20',no:'20',name:'Grad-CAM/Saliency',cat:'tech',diff:3,src:'digit-recognizer'},
- {id:'n21',no:'21',name:'이미지 회귀',cat:'vision',diff:3,src:'petfinder'},
- {id:'n22',no:'22',name:'오디오 분류',cat:'audio',diff:3,src:'FSDD'},
- {id:'n23',no:'23',name:'단어분절(BiLSTM)',cat:'nlp',diff:3,src:'nlp-getting-started'},
- {id:'n24',no:'24',name:'밀도맵 카운팅',cat:'vision',diff:4,src:'global-wheat-detection'},
- {id:'n25',no:'25',name:'텍스트 임베딩/유사도',cat:'nlp',diff:3,src:'nlp-getting-started'},
- {id:'n26',no:'26',name:'클러스터링+PCA(비지도)',cat:'tech',diff:3,src:'digit-recognizer'},
- {id:'n27',no:'27',name:'LoRA/PEFT LLM SFT',cat:'nlp',diff:4,src:'nlp-getting-started'},
+ {id:'n13',no:'13',name:'동결특징+KNN(증분)',cat:'tech',diff:3,src:'digit-recognizer'},
+ {id:'n14',no:'14',name:'피처엔지니어링+선형회귀',cat:'tabular',diff:2,src:'house-prices'},
+ {id:'n15',no:'15',name:'조건부 VAE 생성-검증',cat:'gen',diff:4,src:'digit-recognizer'},
+ {id:'n16',no:'16',name:'대조학습 임베딩(MNR)',cat:'nlp',diff:4,src:'nlp-getting-started'},
+ {id:'n17',no:'17',name:'U-Net 가중CE 분할',cat:'vision',diff:3,src:'data-science-bowl-2018'},
+ {id:'n18',no:'18',name:'메타데이터 FiLM+주기인코딩',cat:'tech',diff:3,src:'digit-recognizer'},
+ {id:'n19',no:'19',name:'오디오 스펙트로그램 CNN',cat:'audio',diff:3,src:'dont-call-me-turkey'},
+ {id:'n20',no:'20',name:'문자 BiLSTM 분절',cat:'nlp',diff:3,src:'nlp-getting-started'},
+ {id:'n21',no:'21',name:'BiLSTM NER',cat:'nlp',diff:3,src:'mipt-ner'},
 ];
 const PB=[
- {id:'p_help',t:'Help BOBAI',y:2024,r:'On-Site',cat:'nlp',diff:3,tech:'KNeighbors+StandardScaler (frozen 임베딩 위 kNN, 클래스 확장)',maps:['n17','n10','n08']},
- {id:'p_hyper',t:'Lost in Hyperspace',y:2024,r:'On-Site',cat:'tabular',diff:3,tech:'PCA+LinearRegression (차원축소+회귀, 피처엔지니어링)',maps:['n26','n03','n04','n06']},
- {id:'p_cow',t:'Madarian Cow',y:2024,r:'On-Site',cat:'gen',diff:4,tech:'diffusers+DETR+timm (Diffusion 편집 + 검출)',maps:['n15','n14','n13']},
- {id:'p_cham',t:'Chameleon',y:2025,r:'At-Home',cat:'multi',diff:4,tech:'SentenceTransformer+cosine (문장 임베딩 유사도 + 시퀀스 추론)',maps:['n25','n11','n17']},
- {id:'p_radar',t:'Radar',y:2025,r:'At-Home/Indiv',cat:'vision',diff:3,tech:'Conv2d + 연결요소 (비-RGB 신호 텐서 CV)',maps:['n08','n09','n13']},
- {id:'p_wthr',t:'Weather (위성 강수)',y:2025,r:'At-Home',cat:'vision',diff:4,tech:'U-Net 회귀 (이미지→연속 맵 dense prediction)',maps:['n21','n09']},
- {id:'p_anti',t:'Antique 인증',y:2025,r:'Individual',cat:'vision',diff:3,tech:'SpectralClustering+SVC+pseudo (준지도+클러스터링)',maps:['n19','n26','n10']},
- {id:'p_chk',t:'Chicken Counting',y:2025,r:'Individual',cat:'vision',diff:4,tech:'U-Net+density map (밀도맵 카운팅)',maps:['n24','n13','n09']},
- {id:'p_conc',t:'Concepts',y:2025,r:'Individual',cat:'multi',diff:4,tech:'unsloth+vllm+trl SFT+CLIP (LoRA SFT + 멀티모달)',maps:['n27','n16','n25','n11']},
- {id:'p_pix',t:'Pixel Efficiency',y:2025,r:'Individual',cat:'tech',diff:4,tech:'CLIP 비전 임베딩 기여도 (중요 픽셀=Saliency)',maps:['n20','n11','n18']},
- {id:'p_rest',t:'Restroom 매칭',y:2025,r:'Individual',cat:'multi',diff:3,tech:'CLIP+cosine (학습형 메트릭러닝 매칭)',maps:['n17','n11']},
- {id:'p_spch',t:'Synthetic Speech',y:2025,r:'GAITE',cat:'audio',diff:3,tech:'ResNet+spectrogram (오디오 분류)',maps:['n22','n10']},
- {id:'p_word',t:'Word Segmentation',y:2025,r:'GAITE',cat:'nlp',diff:3,tech:'BiLSTM (시퀀스 라벨링/분절)',maps:['n23']},
+ {id:'p_help',t:'Help BOBAI',y:2024,r:'On-Site',cat:'nlp',diff:3,tech:'KNeighbors+StandardScaler (frozen 임베딩 위 kNN, 클래스 확장)',maps:['n13','n12','n16']},
+ {id:'p_hyper',t:'Lost in Hyperspace',y:2024,r:'On-Site',cat:'tabular',diff:3,tech:'PCA+LinearRegression (차원축소+회귀, 피처엔지니어링)',maps:['n14','n03','n06']},
+ {id:'p_cow',t:'Madarian Cow',y:2024,r:'On-Site',cat:'gen',diff:4,tech:'생성+검증 (frozen 생성기 + 분류기 검증)',maps:['n15','n08']},
+ {id:'p_cham',t:'Chameleon',y:2025,r:'At-Home',cat:'multi',diff:4,tech:'문장 임베딩 대조학습(MNR) + 코사인 유사도',maps:['n16','n11','n13']},
+ {id:'p_radar',t:'Radar',y:2025,r:'At-Home/Indiv',cat:'vision',diff:3,tech:'가중 CrossEntropy U-Net (비-RGB 신호 텐서 분할)',maps:['n17','n09','n08']},
+ {id:'p_wthr',t:'Weather (위성 강수)',y:2025,r:'At-Home',cat:'vision',diff:4,tech:'메타데이터 FiLM + 주기 인코딩 (이미지→연속값)',maps:['n18','n17']},
+ {id:'p_anti',t:'Antique 인증',y:2025,r:'Individual',cat:'vision',diff:3,tech:'frozen 특징 + 준지도/클러스터링',maps:['n13','n17']},
+ {id:'p_chk',t:'Chicken Counting',y:2025,r:'Individual',cat:'vision',diff:4,tech:'U-Net 분할/밀도 (카운팅)',maps:['n17','n09']},
+ {id:'p_conc',t:'Concepts',y:2025,r:'Individual',cat:'multi',diff:4,tech:'대조학습 임베딩 + 멀티모달(CLIP)',maps:['n16','n11']},
+ {id:'p_pix',t:'Pixel Efficiency',y:2025,r:'Individual',cat:'tech',diff:4,tech:'CLIP 비전 임베딩 기여도 (중요 픽셀=Saliency)',maps:['n11','n13']},
+ {id:'p_rest',t:'Restroom 매칭',y:2025,r:'Individual',cat:'multi',diff:3,tech:'임베딩 매칭 (대조학습/CLIP + 코사인)',maps:['n16','n11']},
+ {id:'p_spch',t:'Synthetic Speech',y:2025,r:'GAITE',cat:'audio',diff:3,tech:'스펙트로그램 CNN (오디오 분류)',maps:['n19','n10']},
+ {id:'p_word',t:'Word Segmentation',y:2025,r:'GAITE',cat:'nlp',diff:3,tech:'문자 BiLSTM 시퀀스 라벨링/분절',maps:['n20','n21']},
 ];
 const REV={};NB.forEach(n=>REV[n.id]=[]);PB.forEach(p=>p.maps.forEach(id=>{if(REV[id])REV[id].push(p.id)}));
 const badge=c=>`<span class="badge" style="background:${CAT[c].c}22;color:${CAT[c].c};border:1px solid ${CAT[c].c}66">${CAT[c].l}</span>`;
@@ -246,14 +240,15 @@ const NBFILE={
  '07':'07_nlp-getting-started_ridge_colab.ipynb','08':'08_digit-recognizer_cnn_colab.ipynb',
  '09':'09_data-science-bowl-2018_unet_colab.ipynb','10':'10_dogs-vs-cats_resnet_colab.ipynb',
  '11':'11_dogs-vs-cats_clip-zeroshot_colab.ipynb','12':'12_nlp-getting-started_bert_colab.ipynb',
- '13':'13_global-wheat-detection_yolo_colab.ipynb','14':'14_dogs-vs-cats_dcgan_colab.ipynb',
- '15':'15_digit-recognizer_diffusion-ddpm_colab.ipynb','16':'16_nlp-getting-started_llm-finetune_colab.ipynb',
- '17':'17_digit-recognizer_metric-learning_colab.ipynb','18':'18_digit-recognizer_compression_colab.ipynb',
- '19':'19_digit-recognizer_semi-supervised_colab.ipynb','20':'20_digit-recognizer_gradcam-saliency_colab.ipynb',
- '21':'21_petfinder_image-regression_colab.ipynb','22':'22_audio_spectrogram-cnn_colab.ipynb',
- '23':'23_nlp-getting-started_word-segmentation_colab.ipynb','24':'24_global-wheat-detection_density-counting_colab.ipynb',
- '25':'25_nlp-getting-started_text-embeddings_colab.ipynb','26':'26_digit-recognizer_clustering-pca_colab.ipynb',
- '27':'27_nlp-getting-started_lora-peft-sft_colab.ipynb',
+ '13':'13_digit-recognizer_frozen-knn-incremental_colab.ipynb',
+ '14':'14_house-prices_feature-engineering-linreg_colab.ipynb',
+ '15':'15_digit-recognizer_conditional-vae-generate-verify_colab.ipynb',
+ '16':'16_nlp-getting-started_contrastive-embedding-mnr-hardneg_colab.ipynb',
+ '17':'17_data-science-bowl-2018_unet-weighted-ce_colab.ipynb',
+ '18':'18_digit-recognizer_metadata-film-cyclic_colab.ipynb',
+ '19':'19_dont-call-me-turkey_audio-spectrogram-cnn_colab.ipynb',
+ '20':'20_nlp-getting-started_char-bilstm-segmentation_colab.ipynb',
+ '21':'21_mipt-ner_bilstm-ner_colab.ipynb',
 };
 function colabURL(no){const f=NBFILE[no];if(!f)return null;
   const path=[GH.dir,f].filter(Boolean).join('/');
