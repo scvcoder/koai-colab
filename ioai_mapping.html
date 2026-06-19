@@ -51,14 +51,16 @@
        font-variant-numeric:tabular-nums}
   .rep:hover{background:#28315a;color:var(--tx)}
   .rep.has{color:#ffd166;border-color:#ffd16655;background:#ffd1660f}
-  /* 완주 보상 토스트 — 화면 정중앙 */
+  /* 완주 보상 토스트 — 화면 정중앙 (클릭하면 닫힘) */
   #nbtoast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);
     max-width:min(78vw,640px);background:#171c2e;border:1px solid #2c3556;border-top:5px solid #3ecf8e;
-    color:#e7ebf5;padding:26px 36px;border-radius:16px;font-size:19px;line-height:1.7;text-align:center;
-    box-shadow:0 20px 70px #000c, 0 0 0 100vmax #0b0e1888;opacity:0;pointer-events:none;transition:.22s;z-index:90}
-  #nbtoast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  #nbtoast.err{border-top-color:#ff5d6c;font-size:16px;padding:20px 28px}
+    color:#e7ebf5;padding:24px 34px 30px;border-radius:16px;font-size:19px;line-height:1.7;text-align:center;
+    box-shadow:0 20px 70px #000c;opacity:0;pointer-events:none;cursor:pointer;transition:.18s;z-index:90}
+  #nbtoast.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+  #nbtoast.err{border-top-color:#ff5d6c;font-size:16px;padding:18px 26px 24px}
   #nbtoast b{color:#ffd166;font-size:1.08em}
+  #nbtoast .nbclose{position:absolute;top:6px;right:12px;font-size:14px;color:#9aa6c7;line-height:1}
+  #nbtoast .nbhint{margin-top:10px;font-size:11px;color:#9aa6c7;opacity:.8}
 
 </style>
 </head>
@@ -157,9 +159,12 @@ const colP=document.getElementById('colP');
 const REPS={}, repEls={};
 function paintRep(el,id){const c=REPS[id]||0;el.textContent='↻ '+c;el.classList.toggle('has',c>0);}
 function nbToast(html,isErr){let t=document.getElementById('nbtoast');
-  if(!t){t=document.createElement('div');t.id='nbtoast';document.body.appendChild(t);}
-  t.className=isErr?'err':'ok';t.innerHTML=html;t.classList.add('show');
-  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),isErr?3500:6500);}
+  if(!t){t=document.createElement('div');t.id='nbtoast';document.body.appendChild(t);
+    t.addEventListener('click',()=>{clearTimeout(t._h);t.classList.remove('show');});}  // 클릭하면 즉시 닫힘
+  t.className=isErr?'err':'ok';
+  t.innerHTML='<span class="nbclose">✕</span>'+html+'<div class="nbhint">아무 곳이나 클릭하면 닫혀요</div>';
+  t.classList.add('show');
+  clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),isErr?2500:2500);}  // 2.5초 후 자동 닫힘
 async function loadCounts(){try{const r=await fetch('/api/notebooks',{credentials:'same-origin'});
   if(!r.ok)return;const d=await r.json();Object.assign(REPS,d.counts||{});
   for(const id in repEls)paintRep(repEls[id],id);}catch(e){}}
